@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 30% 96%;
+    --foreground: 220 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 15%;
+
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 168 50% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 20% 92%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 262 60% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 199 89% 48%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --glass-bg: 0 0% 100% / 0.15;
+    --glass-border: 0 0% 100% / 0.25;
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --gradient-hero: linear-gradient(135deg, hsl(199 89% 48%), hsl(168 50% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(262 60% 55%), hsl(199 89% 48%));
+    --gradient-warm: linear-gradient(135deg, hsl(32 95% 55%), hsl(350 80% 55%));
+    --text-gradient: linear-gradient(135deg, hsl(199 89% 48%), hsl(262 60% 55%));
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 220 25% 8%;
+    --foreground: 210 20% 95%;
+    --card: 220 25% 12%;
+    --card-foreground: 210 20% 95%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 210 20% 95%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 168 50% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 20% 18%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 262 60% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 20% 22%;
+    --input: 220 20% 22%;
+    --ring: 199 89% 48%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .glass {
+    background: hsla(var(--glass-bg));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsla(var(--glass-border));
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-dark {
+    background: hsla(220, 25%, 8%, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+  }
+
+  .gradient-text {
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-hero-bg {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-accent-bg {
+    background: var(--gradient-accent);
+  }
+
+  .glow-primary {
+    box-shadow: 0 0 30px hsla(199, 89%, 48%, 0.3), 0 0 60px hsla(199, 89%, 48%, 0.1);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 30px hsla(262, 60%, 55%, 0.3), 0 0 60px hsla(262, 60%, 55%, 0.1);
+  }
+
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; filter: blur(20px); }
+  50% { opacity: 1; filter: blur(30px); }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+
+@keyframes orbitReverse {
+  from { transform: rotate(0deg) translateX(160px) rotate(0deg); }
+  to { transform: rotate(-360deg) translateX(160px) rotate(360deg); }
+}
