@@ -1,0 +1,46 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - button "Chat History" [ref=e21] [cursor=pointer]
+          - generic [ref=e25]: 🧠
+          - generic [ref=e26]:
+            - heading "Alternate Ego" [level=1] [ref=e27]
+            - paragraph [ref=e28]: new conversation
+        - generic [ref=e31]: Online
+        - generic [ref=e32]:
+          - button "🎬 Video" [disabled] [ref=e33] [cursor=pointer]
+          - button "📄 Export" [ref=e34] [cursor=pointer]
+          - button "🏠" [ref=e35] [cursor=pointer]
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e40]: 🧠
+            - generic [ref=e41]:
+              - generic [ref=e42]: 😐
+              - generic [ref=e43]: Neutral
+          - generic [ref=e44]:
+            - heading "Test User" [level=3] [ref=e45]
+            - paragraph [ref=e46]: Digital Twin • AI Clone
+          - generic [ref=e47]:
+            - generic [ref=e48]: 💬 1 msgs
+            - generic [ref=e49]: 🧠 RAG Active
+          - generic [ref=e50]:
+            - button "📋 All Conversations" [ref=e51] [cursor=pointer]
+            - button "📥 Export JSON" [ref=e52] [cursor=pointer]
+            - button "🔄 New Twin" [ref=e53] [cursor=pointer]
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e74]:
+              - generic [ref=e75]: Hello! Who are you?
+              - generic [ref=e76]:
+                - generic [ref=e77]: 07:34 AM
+                - generic [ref=e78]: ✓✓
+            - generic [ref=e82]: Test User's twin is thinking
+          - generic [ref=e66]:
+            - textbox "Type a message..." [disabled] [ref=e67]
+            - button "Send" [disabled] [ref=e68]:
+              - generic [ref=e69]: Send
+              - img [ref=e70]
+  - alert [ref=e17]

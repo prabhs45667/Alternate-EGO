@@ -1,0 +1,1 @@
+- generic [ref=e2]: "{\"status\":\"healthy\",\"services\":{\"database\":\"✅ PostgreSQL (NeonDB) connected\",\"llm\":\"✅ OpenRouter (x-ai/grok-4.1-fast)\",\"tts\":\"✅ ElevenLabs ready\",\"stt\":\"⚠️ Not available (optional)\"}}"

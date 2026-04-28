@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { startOnboarding } from "@/lib/api";
+import { startOnboarding, linkTwin } from "@/lib/api";
 
 export default function UploadPage() {
   const router = useRouter();
@@ -78,6 +78,21 @@ export default function UploadPage() {
 
       if (dataFiles.length > 0) {
         localStorage.setItem("ego_has_data_file", "true");
+      }
+
+      // Link twin to authenticated account
+      try {
+        await linkTwin(result.user_id, result.twin_id);
+        // Update local account info
+        const acct = localStorage.getItem("ego_account");
+        if (acct) {
+          const parsed = JSON.parse(acct);
+          parsed.user_id = result.user_id;
+          parsed.twin_id = result.twin_id;
+          localStorage.setItem("ego_account", JSON.stringify(parsed));
+        }
+      } catch {
+        // Non-fatal: auth linking failure doesn't block onboarding
       }
 
       router.push("/onboarding");

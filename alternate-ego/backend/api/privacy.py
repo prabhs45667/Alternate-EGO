@@ -24,18 +24,20 @@ async def delete_all_data(twin_id: str):
 
     # Also clean up database records
     conn = get_connection()
+    cursor = conn.cursor()
     try:
         # Delete messages first (foreign key)
-        conn.execute("""
+        cursor.execute("""
             DELETE FROM messages WHERE conversation_id IN (
-                SELECT id FROM conversations WHERE twin_id = ?
+                SELECT id FROM conversations WHERE twin_id = %s
             )
         """, (twin_id,))
-        conn.execute("DELETE FROM conversations WHERE twin_id = ?", (twin_id,))
-        conn.execute("DELETE FROM onboarding_sessions WHERE twin_id = ?", (twin_id,))
-        conn.execute("DELETE FROM twins WHERE id = ?", (twin_id,))
+        cursor.execute("DELETE FROM conversations WHERE twin_id = %s", (twin_id,))
+        cursor.execute("DELETE FROM onboarding_sessions WHERE twin_id = %s", (twin_id,))
+        cursor.execute("DELETE FROM twins WHERE id = %s", (twin_id,))
         conn.commit()
     finally:
+        cursor.close()
         conn.close()
 
     return DeleteResponse(
@@ -53,14 +55,16 @@ async def data_summary(twin_id: str):
 
     # Count conversations and messages
     conn = get_connection()
-    conv_count = conn.execute(
-        "SELECT COUNT(*) as c FROM conversations WHERE twin_id = ?", (twin_id,)
-    ).fetchone()["c"]
-    msg_count = conn.execute("""
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) as c FROM conversations WHERE twin_id = %s", (twin_id,))
+    conv_count = cursor.fetchone()[0]
+    cursor.execute("""
         SELECT COUNT(*) as c FROM messages WHERE conversation_id IN (
-            SELECT id FROM conversations WHERE twin_id = ?
+            SELECT id FROM conversations WHERE twin_id = %s
         )
-    """, (twin_id,)).fetchone()["c"]
+    """, (twin_id,))
+    msg_count = cursor.fetchone()[0]
+    cursor.close()
     conn.close()
 
     return DataSummary(

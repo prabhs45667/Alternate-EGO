@@ -1,0 +1,51 @@
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - button "Chat History" [ref=e6] [cursor=pointer]
+          - generic [ref=e10]: 🧠
+          - generic [ref=e11]:
+            - heading "Alternate Ego" [level=1] [ref=e12]
+            - paragraph [ref=e13]: new conversation
+        - generic [ref=e16]: Online
+        - generic [ref=e17]:
+          - button "🎬 Video" [disabled] [ref=e18] [cursor=pointer]
+          - button "📄 Export" [ref=e19] [cursor=pointer]
+          - button "🚪 Logout" [ref=e20] [cursor=pointer]
+          - button "🏠" [ref=e21] [cursor=pointer]
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e25]:
+              - img "Twin Avatar" [ref=e26]
+              - generic [ref=e27]: 🧠
+            - generic:
+              - generic: 😐
+              - generic: Neutral
+          - generic [ref=e28]:
+            - heading "Test User" [level=3] [ref=e29]
+            - paragraph [ref=e30]: Digital Twin • AI Clone
+          - generic [ref=e31]:
+            - generic [ref=e32]: 💬 0 msgs
+            - generic [ref=e33]: 🧠 RAG Active
+          - generic [ref=e34]:
+            - button "📋 All Conversations" [ref=e35] [cursor=pointer]
+            - button "📥 Export JSON" [ref=e36] [cursor=pointer]
+            - button "🔄 New Twin" [ref=e37] [cursor=pointer]
+        - generic [ref=e38]:
+          - generic [ref=e40]:
+            - generic [ref=e41]: 🧠
+            - heading "Start chatting with your twin" [level=2] [ref=e42]
+            - paragraph [ref=e43]: Ask anything — "Who are you?", "Tell me about your interests", or "What motivates you?"
+            - generic [ref=e44]:
+              - button "Hi, who are you?" [ref=e45] [cursor=pointer]
+              - button "Tell me about your passions" [ref=e46] [cursor=pointer]
+              - button "What's your biggest goal?" [ref=e47] [cursor=pointer]
+            - paragraph [ref=e48]: "Slash commands: /linkedin post <content> • /twitter tweet <content> • /schedule • /autoreply • /help"
+          - generic [ref=e50]:
+            - textbox "Type a message..." [active] [ref=e51]
+            - button "Send" [disabled] [ref=e52]:
+              - generic [ref=e53]: Send
+              - img [ref=e54]
+  - alert [ref=e57]

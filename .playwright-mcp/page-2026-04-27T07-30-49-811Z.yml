@@ -1,0 +1,14 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - heading "Alternate Ego" [level=1] [ref=e8]
+        - paragraph [ref=e9]: SIGN IN
+      - textbox "Email address" [ref=e11]
+      - textbox "Password" [ref=e13]
+      - button "Sign In" [ref=e14] [cursor=pointer]
+      - generic [ref=e15]:
+        - text: Don't have an account?
+        - link "Sign Up" [ref=e16] [cursor=pointer]:
+          - /url: /signup
+  - alert [ref=e17]

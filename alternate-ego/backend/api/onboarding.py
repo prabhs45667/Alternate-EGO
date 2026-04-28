@@ -216,10 +216,14 @@ async def complete_onboarding(
             return {"status": "error", "message": "Twin not found"}
 
         # Build system prompt
-        # Try to find the user name
-        from db.database import get_connection
+        # Get user name
+        from db.database import _row_to_dict
         conn = get_connection()
-        user = conn.execute("SELECT name FROM users WHERE id = ?", (twin.get("user_id", ""),)).fetchone()
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM users WHERE id = %s", (twin.get("user_id", ""),))
+        row = cursor.fetchone()
+        user = _row_to_dict(cursor, row)
+        cursor.close()
         conn.close()
         name = user["name"] if user else "User"
 

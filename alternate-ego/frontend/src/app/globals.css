@@ -188,6 +188,7 @@ body {
   -webkit-backdrop-filter: var(--blur-md);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
+  margin: 0 auto;
   padding: 2rem 2.5rem;
   box-shadow: var(--shadow-deep);
 }
@@ -540,4 +541,29 @@ body {
     font-size: 0.75rem;
     padding: 6px 12px;
   }
+}
+/* --- Submit Button (alias for upload-btn) --- */
+.submit-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--gradient-purple);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-pill);
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.submit-btn:hover {
+  background: linear-gradient(135deg, #6d3cc0, #8b5cf6, #818cf8);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-purple);
+}
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }

@@ -46,6 +46,7 @@ os.makedirs("storage/videos", exist_ok=True)
 app.mount("/static/storage", StaticFiles(directory="storage"), name="storage")
 
 # Import and mount routers
+from api.auth import router as auth_router
 from api.onboarding import router as onboarding_router
 from api.chat import router as chat_router
 from api.mcp_actions import router as mcp_router
@@ -54,6 +55,7 @@ from api.memory import router as memory_router
 from api.ws_logs import router as ws_router
 from api.avatar_api import router as avatar_router
 
+app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
 app.include_router(onboarding_router, prefix="/api/onboarding", tags=["Onboarding"])
 app.include_router(chat_router, prefix="/api/chat", tags=["Chat"])
 app.include_router(mcp_router, prefix="/api/mcp", tags=["MCP Actions"])
@@ -82,18 +84,15 @@ def root():
 @app.get("/health")
 def health():
     """Detailed health check."""
-    from rag.embedder import is_ollama_available as embed_check
-    from rag.llm import is_ollama_available as llm_check
     from voice.stt import is_available as stt_check
 
     return {
         "status": "healthy",
         "services": {
-            "database": "✅ SQLite connected",
-            "ollama_embeddings": "✅ Available" if embed_check() else "❌ Not available",
-            "ollama_llm": "✅ Available" if llm_check() else "❌ Not available",
-            "stt": "✅ Available" if stt_check() else "❌ Not available",
-            "tts": "✅ Edge-TTS ready"
+            "database": "✅ PostgreSQL (NeonDB) connected",
+            "llm": f"✅ OpenRouter ({settings.OPENROUTER_MODEL})",
+            "tts": "✅ ElevenLabs ready",
+            "stt": "✅ Available" if stt_check() else "⚠️ Not available (optional)",
         }
     }
 

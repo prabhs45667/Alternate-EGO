@@ -179,7 +179,7 @@ export default function ChatPage() {
             const errorMsg: Message = {
                 id: (Date.now() + 1).toString(),
                 role: "assistant",
-                content: "Sorry, I couldn't connect to my brain. Make sure the backend server and Ollama are running.",
+                content: "Sorry, I couldn't connect to my brain. Make sure the backend server is running on port 8000.",
                 mood: "sad",
                 timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
             };
@@ -522,6 +522,15 @@ export default function ChatPage() {
                         onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(139,92,246,0.2)"; e.currentTarget.style.color = "white"; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
                     >📄 Export</button>
+                    <button onClick={() => {
+                        localStorage.removeItem("ego_token");
+                        localStorage.removeItem("ego_account");
+                        localStorage.removeItem("ego_session");
+                        router.push("/login");
+                    }} title="Logout" style={{ padding: "8px 12px", borderRadius: "10px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)", cursor: "pointer", fontSize: "0.75rem", transition: "all 0.2s" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(248,113,113,0.2)"; e.currentTarget.style.color = "#f87171"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
+                    >🚪 Logout</button>
                     <button onClick={() => router.push("/")} title="Home" style={{ padding: "8px 12px", borderRadius: "10px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)", cursor: "pointer", fontSize: "0.75rem", transition: "all 0.2s" }}
                         onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.12)"; e.currentTarget.style.color = "white"; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}

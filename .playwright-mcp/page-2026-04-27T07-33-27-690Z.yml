@@ -1,0 +1,40 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e97]:
+      - generic [ref=e98]:
+        - heading "Configure Your Avatar" [level=1] [ref=e99]
+        - paragraph [ref=e100]: Capture four expressions to bring your digital twin to life
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - generic [ref=e105]: Expression 1 / 4
+          - heading "😐 Look straight at the camera (neutral expression)" [level=2] [ref=e107]
+          - button "Capture Photo" [ref=e109] [cursor=pointer]
+          - generic [ref=e113]: Live
+          - paragraph [ref=e115]: Camera access denied. Please allow camera access.
+        - generic [ref=e116]:
+          - generic [ref=e118]:
+            - heading "Capture Progress" [level=3] [ref=e119]
+            - generic [ref=e120]: 0 / 4
+          - generic [ref=e122]:
+            - generic [ref=e123]:
+              - generic [ref=e125]: 😐
+              - generic [ref=e126]:
+                - heading "neutral" [level=4] [ref=e127]
+                - paragraph [ref=e128]: Awaiting...
+            - generic [ref=e129]:
+              - generic [ref=e131]: 😊
+              - generic [ref=e132]:
+                - heading "happy" [level=4] [ref=e133]
+                - paragraph [ref=e134]: Pending
+            - generic [ref=e135]:
+              - generic [ref=e137]: 😢
+              - generic [ref=e138]:
+                - heading "sad" [level=4] [ref=e139]
+                - paragraph [ref=e140]: Pending
+            - generic [ref=e141]:
+              - generic [ref=e143]: 😠
+              - generic [ref=e144]:
+                - heading "angry" [level=4] [ref=e145]
+                - paragraph [ref=e146]: Pending
+          - paragraph [ref=e148]: 💡 Click any captured photo to preview it full-size. Use the ✕ button to retake.
+  - alert [ref=e49]

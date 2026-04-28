@@ -4,35 +4,32 @@ from config import settings
 
 logger = logging.getLogger(__name__)
 
-OLLAMA_URL = "http://127.0.0.1:11434/api"
+OPENROUTER_URL = "https://openrouter.ai/api/v1/embeddings"
+
 
 def is_ollama_available() -> bool:
-    """Check if Ollama local server is running."""
-    try:
-        response = requests.get("http://127.0.0.1:11434/", timeout=2)
-        return response.status_code == 200
-    except requests.RequestException:
-        return False
+    """Legacy stub — always True since we use OpenRouter embeddings."""
+    return True
+
 
 def generate_embedding(text: str) -> list[float]:
-    """
-    Generate an embedding vector using Ollama's local embedding model.
-    Defaulting to 768 dimensions representing common embedding model sizes.
-    """
+    """Generate an embedding vector using OpenRouter / OpenAI text-embedding-3-small."""
+    headers = {
+        "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "model": settings.EMBEDDING_MODEL,
+        "input": text,
+    }
     try:
-        response = requests.post(
-            f"{OLLAMA_URL}/embeddings",
-            json={
-                "model": settings.EMBEDDING_MODEL,
-                "prompt": text
-            },
-            timeout=10
-        )
+        response = requests.post(OPENROUTER_URL, json=payload, headers=headers, timeout=15)
         if response.status_code == 200:
-            return response.json().get("embedding", [0.0] * 768)
+            data = response.json()
+            return data["data"][0]["embedding"]
         else:
-            logger.error(f"Ollama embedding error HTTP {response.status_code}: {response.text}")
-            return [0.0] * 768
+            logger.warning(f"Embedding API error {response.status_code}: {response.text}. Using zero vector.")
+            return [0.0] * 1536
     except requests.RequestException as e:
-        logger.error(f"Ollama connection error: {e}")
-        return [0.0] * 768
+        logger.error(f"Embedding connection error: {e}")
+        return [0.0] * 1536

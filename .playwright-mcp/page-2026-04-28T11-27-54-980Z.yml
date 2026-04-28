@@ -1,0 +1,47 @@
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: Project Supermind
+        - heading "The mind behind your operations." [level=2] [ref=e8]
+        - paragraph [ref=e9]: Sign back in to pick up your company, your workflows, and the operator view that keeps the whole system moving.
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - link "SuperMind SuperMind" [ref=e12] [cursor=pointer]:
+            - /url: /
+            - img "SuperMind" [ref=e13]
+            - generic [ref=e14]: SuperMind
+          - link "Create account" [ref=e15] [cursor=pointer]:
+            - /url: /signup
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - heading "Login to your account" [level=1] [ref=e18]
+            - paragraph [ref=e19]: Use your existing Project Supermind credentials to enter the platform.
+          - generic [ref=e20]:
+            - link "Google" [ref=e21] [cursor=pointer]:
+              - /url: /api/auth/google
+              - img [ref=e22]
+              - text: Google
+            - link "Microsoft" [ref=e27] [cursor=pointer]:
+              - /url: /api/auth/microsoft
+              - img [ref=e28]
+              - text: Microsoft
+          - generic [ref=e33]: Or
+          - generic [ref=e36]:
+            - textbox "Email address" [active] [ref=e37]
+            - textbox "Password" [ref=e38]
+            - link "Forgot password?" [ref=e40] [cursor=pointer]:
+              - /url: /forgot-password
+            - button "Continue" [disabled] [ref=e41]
+          - paragraph [ref=e42]:
+            - text: Don't have account?
+            - link "Create an account" [ref=e43] [cursor=pointer]:
+              - /url: /signup
+        - generic [ref=e44]:
+          - link "Privacy policy" [ref=e45] [cursor=pointer]:
+            - /url: /privacy
+          - link "Terms of service" [ref=e46] [cursor=pointer]:
+            - /url: /terms
+  - button "Open Next.js Dev Tools" [ref=e52] [cursor=pointer]:
+    - img [ref=e53]
+  - alert [ref=e56]

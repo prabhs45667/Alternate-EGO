@@ -1,0 +1,45 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - heading "Alternate Ego" [level=1] [ref=e80]
+        - paragraph [ref=e81]: UPLOAD YOURSELF
+      - textbox "Enter your full name" [ref=e83]
+      - generic [ref=e84]: SOCIAL PROFILES (OPTIONAL)
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - generic [ref=e87]: 💼
+          - textbox "LinkedIn URL" [ref=e88]
+        - generic [ref=e89]:
+          - generic [ref=e90]: 📸
+          - textbox "Instagram URL or @handle" [ref=e91]
+        - generic [ref=e92]:
+          - generic [ref=e93]: 🐦
+          - textbox "Twitter/X URL or @handle" [ref=e94]
+        - generic [ref=e95]:
+          - generic [ref=e96]: 📘
+          - textbox "Facebook URL" [ref=e97]
+      - generic [ref=e98]: CONTACT INFO (OPTIONAL)
+      - generic [ref=e99]:
+        - generic [ref=e100]:
+          - generic [ref=e101]: 📧
+          - textbox "Email address" [ref=e102]
+        - generic [ref=e103]:
+          - generic [ref=e104]: 📱
+          - textbox "Phone number" [ref=e105]
+      - generic [ref=e106]: DATA EXPORT ZIP (OPTIONAL)
+      - button "Choose File" [ref=e108]
+      - generic [ref=e109]:
+        - heading "🛡️ Your Privacy is Protected" [level=3] [ref=e110]:
+          - generic [ref=e111]: 🛡️
+          - text: Your Privacy is Protected
+        - list [ref=e112]:
+          - listitem [ref=e113]: • Your data is encrypted and processed locally on your device
+          - listitem [ref=e114]: • We never share your data with anyone
+          - listitem [ref=e115]: • Raw files are deleted automatically after processing
+          - listitem [ref=e116]: • You can delete all your data at any time
+      - generic [ref=e117] [cursor=pointer]:
+        - checkbox "I consent to the processing of my data" [ref=e118]
+        - generic [ref=e119]: I consent to the processing of my data
+      - button "UPLOAD YOURSELF ➔" [disabled] [ref=e120]
+  - alert [ref=e57]

@@ -6,101 +6,81 @@ from config import settings
 
 logger = logging.getLogger(__name__)
 
-OLLAMA_URL = "http://127.0.0.1:11434/api"
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+
 
 def is_ollama_available() -> bool:
-    """Check if Ollama local server is running."""
+    """Legacy stub — always returns True since we now use OpenRouter."""
+    return True
+
+
+def _openrouter_chat(messages: list, max_tokens: int = 512) -> str:
+    """Call OpenRouter chat completions API."""
+    headers = {
+        "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://alternate-ego.app",
+        "X-Title": "Alternate Ego",
+    }
+    payload = {
+        "model": settings.OPENROUTER_MODEL,
+        "messages": messages,
+        "max_tokens": max_tokens,
+        "temperature": 0.7,
+        "top_p": 0.9,
+    }
     try:
-        response = requests.get("http://127.0.0.1:11434/", timeout=2)
-        return response.status_code == 200
-    except requests.RequestException:
-        return False
+        response = requests.post(OPENROUTER_URL, json=payload, headers=headers, timeout=60)
+        if response.status_code == 200:
+            data = response.json()
+            return data["choices"][0]["message"]["content"]
+        else:
+            logger.error(f"OpenRouter error {response.status_code}: {response.text}")
+            return f"I'm having trouble connecting right now. Please try again."
+    except requests.RequestException as e:
+        logger.error(f"OpenRouter connection error: {e}")
+        return "I'm offline at the moment. Please try again."
+
 
 def generate_response(prompt, system_prompt: str = "") -> str:
-    """Generate text response using Ollama.
-    
+    """Generate text response using OpenRouter (grok-4.1-fast).
+
     Args:
-        prompt: Either a string (simple prompt) or a list of message dicts
+        prompt: Either a string or a list of message dicts
                 [{"role": "system"/"user"/"assistant", "content": "..."}]
         system_prompt: System prompt (only used when prompt is a string)
     """
-    try:
-        # If prompt is a list of messages, use /api/chat (multi-turn)
-        if isinstance(prompt, list):
-            response = requests.post(
-                f"{OLLAMA_URL}/chat",
-                json={
-                    "model": settings.OLLAMA_MODEL,
-                    "messages": prompt,
-                    "stream": False,
-                    "options": {
-                        "num_predict": 256,
-                        "temperature": 0.7,
-                        "top_p": 0.9,
-                        "repeat_penalty": 1.1,
-                    }
-                },
-                timeout=45
-            )
-            if response.status_code == 200:
-                return response.json().get("message", {}).get("content", "")
-            else:
-                logger.error(f"Ollama chat error HTTP {response.status_code}: {response.text}")
-                return f"Error: Ollama returned status {response.status_code}"
-        
-        # If prompt is a string, use /api/generate (simple)
-        response = requests.post(
-            f"{OLLAMA_URL}/generate",
-            json={
-                "model": settings.OLLAMA_MODEL,
-                "prompt": str(prompt),
-                "system": system_prompt,
-                "stream": False,
-                "options": {
-                    "num_predict": 256,
-                    "temperature": 0.7,
-                    "top_p": 0.9,
-                }
-            },
-            timeout=45
-        )
-        if response.status_code == 200:
-            return response.json().get("response", "")
-        else:
-            logger.error(f"Ollama generation error HTTP {response.status_code}: {response.text}")
-            return f"Error: Ollama returned status {response.status_code}"
-    except requests.RequestException as e:
-        logger.error(f"Ollama generation connection error: {e}")
-        return f"Error connecting to Ollama: {str(e)}"
+    if isinstance(prompt, list):
+        return _openrouter_chat(prompt)
+
+    messages = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": str(prompt)})
+    return _openrouter_chat(messages)
 
 
 def generate_response_with_mood(prompt) -> tuple:
     """Generate text response AND detect mood in a single LLM call.
-    
-    The system prompt instructs the model to end with [MOOD:xxx].
-    This function parses it out, saving a full separate LLM call.
-    
+
     Returns:
         Tuple of (response_text, mood_string)
     """
     raw_response = generate_response(prompt)
-    
-    # Parse mood tag from response
+
     mood = "neutral"
     clean_response = raw_response
-    
+
     mood_match = re.search(r'\[MOOD:\s*(\w+)\s*\]', raw_response)
     if mood_match:
         mood = mood_match.group(1).lower()
         clean_response = raw_response[:mood_match.start()].strip()
-        # Validate mood
         valid_moods = {"neutral", "happy", "excited", "sad", "angry", "thoughtful"}
         if mood not in valid_moods:
             mood = "neutral"
     else:
-        # Fallback: quick keyword-based mood detection (no LLM call needed)
         mood = _detect_mood_fast(raw_response)
-    
+
     return clean_response, mood
 
 

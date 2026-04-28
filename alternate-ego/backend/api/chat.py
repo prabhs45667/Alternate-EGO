@@ -54,8 +54,13 @@ async def send_message(req: ChatRequest):
     history = get_messages(conversation_id, limit=20)
 
     # Get user name
+    from db.database import _row_to_dict
     conn = get_connection()
-    user = conn.execute("SELECT name FROM users WHERE id = ?", (twin.get("user_id", ""),)).fetchone()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM users WHERE id = %s", (twin.get("user_id", ""),))
+    row = cursor.fetchone()
+    user = _row_to_dict(cursor, row)
+    cursor.close()
     conn.close()
     name = user["name"] if user else "User"
 
@@ -126,8 +131,13 @@ async def send_message(req: ChatRequest):
 async def _handle_slash_command(slash: dict, req: ChatRequest, twin: dict) -> ChatResponse:
     """Handle a slash command (social media posting, scheduling, auto-reply, help)."""
     # Get user name for personalization
+    from db.database import _row_to_dict
     conn = get_connection()
-    user = conn.execute("SELECT name FROM users WHERE id = ?", (twin.get("user_id", ""),)).fetchone()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM users WHERE id = %s", (twin.get("user_id", ""),))
+    row = cursor.fetchone()
+    user = _row_to_dict(cursor, row)
+    cursor.close()
     conn.close()
     name = user["name"] if user else "User"
 
@@ -198,8 +208,13 @@ async def export_conversation(twin_id: str, conversation_id: str = None):
         return {"error": "Twin not found"}
 
     # Get user name
+    from db.database import _row_to_dict
     conn = get_connection()
-    user = conn.execute("SELECT name FROM users WHERE id = ?", (twin.get("user_id", ""),)).fetchone()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM users WHERE id = %s", (twin.get("user_id", ""),))
+    row = cursor.fetchone()
+    user = _row_to_dict(cursor, row)
+    cursor.close()
     conn.close()
     name = user["name"] if user else "User"
 
@@ -244,8 +259,13 @@ async def export_conversation_pdf(twin_id: str, conversation_id: str = None):
     if not twin:
         return HTMLResponse("<h1>Twin not found</h1>", status_code=404)
     
+    from db.database import _row_to_dict
     conn = get_connection()
-    user = conn.execute("SELECT name FROM users WHERE id = ?", (twin.get("user_id", ""),)).fetchone()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM users WHERE id = %s", (twin.get("user_id", ""),))
+    row = cursor.fetchone()
+    user = _row_to_dict(cursor, row)
+    cursor.close()
     conn.close()
     name = user["name"] if user else "User"
     
