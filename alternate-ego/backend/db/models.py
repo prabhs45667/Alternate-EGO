@@ -11,8 +11,10 @@ class StartRequest(BaseModel):
     instagram_url: str = ""
     twitter_url: str = ""
     facebook_url: str = ""
+    other_url: str = ""
     email: str = ""
     phone: str = ""
+    gender: str = "male"
 
 class StartResponse(BaseModel):
     user_id: str

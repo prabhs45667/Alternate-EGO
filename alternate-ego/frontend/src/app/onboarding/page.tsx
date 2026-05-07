@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
     scrapeProfiles,
-    uploadPhoto,
+    uploadSinglePhoto,
+    generateAllAvatars,
     uploadVoice,
     completeOnboarding,
     getInterviewQuestions,
@@ -15,18 +16,13 @@ import {
 type Step = "scraping" | "camera" | "voice" | "generating";
 
 const EMOTIONS = ["neutral", "happy", "sad", "angry"] as const;
-const EMOTION_LABELS: Record<string, string> = {
-    neutral: "Look straight at the camera (neutral expression)",
-    happy: "Smile naturally (happy expression)",
-    sad: "Show a sad expression",
-    angry: "Show an angry expression",
-};
 const EMOTION_ICONS: Record<string, string> = {
     neutral: "😐",
     happy: "😊",
     sad: "😢",
     angry: "😠",
 };
+const BACKEND_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function OnboardingPage() {
     const router = useRouter();
@@ -36,7 +32,6 @@ export default function OnboardingPage() {
     const [error, setError] = useState("");
 
     // Camera state
-    const [currentEmotion, setCurrentEmotion] = useState(0);
     const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
     const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
     const [isCapturing, setIsCapturing] = useState(false);
@@ -121,6 +116,7 @@ export default function OnboardingPage() {
                 instagram_url: s.instagram_url || "",
                 twitter_url: s.twitter_url || "",
                 facebook_url: s.facebook_url || "",
+                other_url: s.other_url || "",
             });
             setLogs(prev => [...prev, "✅ Scraping complete! Processing profile..."]);
         } catch (e) {
@@ -198,6 +194,7 @@ export default function OnboardingPage() {
         // Debounce: prevent rapid double-captures
         if (!videoRef.current || !canvasRef.current || !session || isCapturing) return;
         setIsCapturing(true);
+        setError("");
 
         const video = videoRef.current;
         const canvas = canvasRef.current;
@@ -207,40 +204,38 @@ export default function OnboardingPage() {
         ctx.drawImage(video, 0, 0);
 
         const base64 = canvas.toDataURL("image/jpeg", 0.85);
-        const emotion = EMOTIONS[currentEmotion];
 
         try {
-            await uploadPhoto({
+            await uploadSinglePhoto({
                 twin_id: session.twin_id,
                 session_id: session.session_id,
-                emotion,
                 photo: base64,
             });
 
-            const newPhotos = [...capturedPhotos, base64];
-            setCapturedPhotos(newPhotos);
+            const result = await generateAllAvatars(
+                session.twin_id,
+                session.name || "",
+                session.gender || "male"
+            );
 
-            if (currentEmotion < EMOTIONS.length - 1) {
-                // Wait 600ms before allowing next capture to prevent race condition
-                setTimeout(() => {
-                    setCurrentEmotion(currentEmotion + 1);
-                    setIsCapturing(false);
-                }, 600);
-            } else {
-                // All photos captured, move to voice
-                stopCamera();
-                setStep("voice");
-            }
+            const cacheBust = Date.now();
+            const newPhotos = EMOTIONS.map((emotion) => {
+                const relativeUrl = result.avatar_urls?.[emotion] || `/static/storage/avatars/${session.twin_id}/${emotion}_avatar.png`;
+                return `${BACKEND_BASE}${relativeUrl}?t=${cacheBust}`;
+            });
+            setCapturedPhotos(newPhotos);
+            stopCamera();
+            setTimeout(() => setStep("voice"), 500);
         } catch (e) {
-            setError("Failed to upload photo");
+            setError("Failed to upload photo and generate avatars.");
+        } finally {
             setIsCapturing(false);
         }
     };
 
-    const retakePhoto = (index: number) => {
-        const newPhotos = capturedPhotos.filter((_, i) => i !== index);
-        setCapturedPhotos(newPhotos);
-        setCurrentEmotion(index);
+    const retakePhoto = (_index: number) => {
+        setCapturedPhotos([]);
+        startCamera();
     };
 
     // Voice functions
@@ -702,7 +697,7 @@ export default function OnboardingPage() {
                         style={{ textAlign: 'center', paddingTop: '0.5rem', paddingBottom: '1rem', flexShrink: 0 }}
                     >
                         <h1 style={{ fontSize: '1.8rem', fontWeight: 600, color: 'white', letterSpacing: '-0.02em', marginBottom: '0.3rem' }}>Configure Your Avatar</h1>
-                        <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>Capture four expressions to bring your digital twin to life</p>
+                        <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>Capture one clear photo and we will generate your full avatar set</p>
                     </motion.div>
 
                     {/* Main Content - Camera + Sidebar */}
@@ -743,14 +738,14 @@ export default function OnboardingPage() {
                                     color: 'rgba(255,255,255,0.9)',
                                     fontWeight: 600,
                                 }}>
-                                    Expression {currentEmotion + 1} / 4
+                                    {isCapturing ? "Generating Avatars" : capturedPhotos.length ? "Avatar Set Ready" : "Single Capture"}
                                 </span>
                             </div>
 
                             {/* Instruction text */}
                             <div style={{ position: 'absolute', bottom: '90px', left: 0, right: 0, zIndex: 10, textAlign: 'center', padding: '0 1rem' }}>
                                 <h2 style={{ fontSize: '1.5rem', color: 'white', fontWeight: 500, textShadow: '0 2px 12px rgba(0,0,0,0.8)', marginBottom: '4px' }}>
-                                    {EMOTION_ICONS[EMOTIONS[currentEmotion]]} {EMOTION_LABELS[EMOTIONS[currentEmotion]]}
+                                    {isCapturing ? "✨ Generating neutral, happy, sad, and angry avatars..." : "📸 Take one clear, front-facing photo"}
                                 </h2>
                             </div>
 
@@ -758,13 +753,15 @@ export default function OnboardingPage() {
                             <div style={{ position: 'absolute', bottom: '20px', left: 0, right: 0, zIndex: 10, display: 'flex', justifyContent: 'center' }}>
                                 <button
                                     onClick={capturePhoto}
+                                    disabled={isCapturing}
                                     style={{
                                         width: '68px', height: '68px',
                                         borderRadius: '50%',
                                         border: '4px solid rgba(255,255,255,0.85)',
                                         padding: '4px',
                                         background: 'transparent',
-                                        cursor: 'pointer',
+                                        cursor: isCapturing ? 'wait' : 'pointer',
+                                        opacity: isCapturing ? 0.7 : 1,
                                         transition: 'transform 0.15s',
                                     }}
                                     onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.92)')}
@@ -809,7 +806,7 @@ export default function OnboardingPage() {
                             {/* Sidebar Header */}
                             <div style={{ marginBottom: '1rem', flexShrink: 0 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white' }}>Capture Progress</h3>
+                                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white' }}>Generated Avatars</h3>
                                     <span style={{ fontSize: '0.8rem', color: '#a78bfa', fontWeight: 600 }}>{capturedPhotos.length} / 4</span>
                                 </div>
                                 {/* Progress bar */}
@@ -825,7 +822,7 @@ export default function OnboardingPage() {
                             {/* Expression List */}
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' as const, gap: '0.6rem', overflow: 'auto' }}>
                                 {EMOTIONS.map((emotion, i) => {
-                                    const isCurrent = i === currentEmotion;
+                                    const isCurrent = !capturedPhotos.length && i === 0;
                                     const isCaptured = i < capturedPhotos.length;
 
                                     return (
@@ -876,7 +873,7 @@ export default function OnboardingPage() {
                                             <div style={{ flex: 1, minWidth: 0 }}>
                                                 <h4 style={{ color: 'white', fontWeight: 500, fontSize: '0.95rem', textTransform: 'capitalize' as const, letterSpacing: '0.02em' }}>{emotion}</h4>
                                                 <p style={{ color: isCaptured ? 'rgba(52,199,89,0.85)' : 'rgba(255,255,255,0.45)', fontSize: '0.75rem', marginTop: '2px' }}>
-                                                    {isCaptured ? '✓ Captured' : isCurrent ? 'Awaiting...' : 'Pending'}
+                                                    {isCaptured ? '✓ Generated' : isCapturing ? 'Generating...' : isCurrent ? 'Waiting for capture' : 'Pending'}
                                                 </p>
                                             </div>
 
@@ -940,7 +937,7 @@ export default function OnboardingPage() {
                                 flexShrink: 0,
                             }}>
                                 <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.4, textAlign: 'center' }}>
-                                    💡 Click any captured photo to preview it full-size. Use the ✕ button to retake.
+                                    💡 One photo is enough. We generate the full avatar set automatically, and you can preview any generated avatar here.
                                 </p>
                             </div>
                         </div>
