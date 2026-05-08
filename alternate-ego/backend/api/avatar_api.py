@@ -101,7 +101,7 @@ async def generate_video_avatar(req: VideoRequest):
         if not audio_path:
             return {
                 "status": "error",
-                "message": "Could not generate TTS audio. Check that ElevenLabs is configured correctly.",
+                "message": "Could not generate TTS audio. Install Edge-TTS or gTTS, or enable Coqui XTTS.",
                 "video_url": "",
             }
 

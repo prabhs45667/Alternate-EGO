@@ -91,7 +91,7 @@ def health():
         "services": {
             "database": "✅ PostgreSQL (NeonDB) connected",
             "llm": f"✅ OpenRouter ({settings.OPENROUTER_MODEL})",
-            "tts": "✅ ElevenLabs ready",
+            "tts": "✅ Fallback TTS configured (Coqui/Edge/gTTS)",
             "stt": "✅ Available" if stt_check() else "⚠️ Not available (optional)",
         }
     }

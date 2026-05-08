@@ -13,9 +13,8 @@ class Settings(BaseSettings):
     # ── Embeddings ──
     EMBEDDING_MODEL: str = "text-embedding-3-small"
 
-    # ── TTS (ElevenLabs) ──
-    ELEVENLABS_API_KEY: str = ""
-    ELEVENLABS_VOICE_ID: str = "21m00Tcm4TlvDq8ikWAM"
+    # ── TTS ──
+    EDGE_TTS_VOICE: str = "en-US-GuyNeural"
 
     # ── Database (PostgreSQL / NeonDB) ──
     DATABASE_URL: str = ""
@@ -47,6 +46,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = str(_ENV_FILE)
+        extra = "ignore"
 
 settings = Settings()
 

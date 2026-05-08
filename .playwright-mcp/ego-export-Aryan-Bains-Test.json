@@ -1,0 +1,29 @@
+{
+  "twin_id": "46cb4208-932c-4b3d-8172-65c0113a16a2",
+  "twin_name": "Aryan Bains Test",
+  "conversation_id": "b54163dc-5ab6-487a-8802-35c57250f489",
+  "messages": [
+    {
+      "id": "eeb81399-4562-43d7-90c4-bb9258ba2b66",
+      "conversation_id": "b54163dc-5ab6-487a-8802-35c57250f489",
+      "role": "user",
+      "content": "Who are you and what do you know about me?",
+      "sources": "[]",
+      "mood": "neutral",
+      "audio_path": null,
+      "created_at": "2026-05-07T16:14:54.497633"
+    },
+    {
+      "id": "8d0405c9-03a6-453d-bb41-5d46829a7e9f",
+      "conversation_id": "b54163dc-5ab6-487a-8802-35c57250f489",
+      "role": "assistant",
+      "content": "Hey, I'm Aryan Bains Test, a software developer who's super into building cool AI projects and messing around with tech that makes life easier. I don't have any personal details on you right now—I'm just here chatting based on what we talk about. What's on your mind?",
+      "sources": "[{\"icon\": \"\\ud83d\\udce6\", \"label\": \"Data Export\", \"text\": \"### 9 Interview Questions\\n```python\\nQUESTIONS = [\\n    \\\"Tell me about yourself \\u2014 \", \"url\": \"storage/uploads\\\\46cb4208-932c-4b3d-8172-65c0113a16a2\\\\implementation.md\", \"relevance\": 0.3407, \"type\": \"data_export\"}, {\"icon\": \"\\ud83d\\udce6\", \"label\": \"Data Export\", \"text\": \"### Chat Flow\\n```\\nUser: \\\"What do you do for work?\\\"\\n    \\u2193\\n1. Check for /slash com\", \"url\": \"storage/uploads\\\\46cb4208-932c-4b3d-8172-65c0113a16a2\\\\implementation.md\", \"relevance\": 0.305, \"type\": \"data_export\"}, {\"icon\": \"\\ud83d\\udce6\", \"label\": \"Data Export\", \"text\": \"```\\n\\u250c\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2510\\n\\u2502  STEP \", \"url\": \"storage/uploads\\\\46cb4208-932c-4b3d-8172-65c0113a16a2\\\\implementation.md\", \"relevance\": 0.2918, \"type\": \"data_export\"}]",
+      "mood": "happy",
+      "audio_path": null,
+      "created_at": "2026-05-07T16:15:04.567716"
+    }
+  ],
+  "exported_at": "2026-05-07T16:18:09.080848",
+  "total_messages": 2
+}

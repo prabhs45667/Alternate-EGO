@@ -26,6 +26,7 @@ import uuid
 import logging
 import subprocess
 import shutil
+import sys
 from typing import Optional
 from config import settings
 
@@ -35,6 +36,21 @@ logger = logging.getLogger(__name__)
 SADTALKER_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "SadTalker"))
 WAV2LIP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "Wav2Lip"))
 VIDEOS_DIR = os.path.join(settings.STORAGE_DIR, "videos")
+
+
+def _build_subprocess_env() -> dict:
+    """Build an environment for video tools with ffmpeg available when packaged."""
+    env = os.environ.copy()
+
+    try:
+        import imageio_ffmpeg
+
+        ffmpeg_dir = os.path.dirname(imageio_ffmpeg.get_ffmpeg_exe())
+        env["PATH"] = ffmpeg_dir + os.pathsep + env.get("PATH", "")
+    except Exception:
+        pass
+
+    return env
 
 
 def is_sadtalker_available() -> bool:
@@ -66,7 +82,7 @@ def generate_video_sadtalker(image_path: str, audio_path: str, output_path: str)
     os.makedirs(output_dir, exist_ok=True)
 
     cmd = [
-        "python", os.path.join(SADTALKER_DIR, "inference.py"),
+        sys.executable, os.path.join(SADTALKER_DIR, "inference.py"),
         "--driven_audio", audio_path,
         "--source_image", image_path,
         "--result_dir", output_dir,
@@ -82,7 +98,8 @@ def generate_video_sadtalker(image_path: str, audio_path: str, output_path: str)
             capture_output=True,
             text=True,
             timeout=300,               # 5 minutes max
-            cwd=SADTALKER_DIR
+            cwd=SADTALKER_DIR,
+            env=_build_subprocess_env(),
         )
 
         if result.returncode != 0:
@@ -126,7 +143,7 @@ def generate_video_wav2lip(image_path: str, audio_path: str, output_path: str) -
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     cmd = [
-        "python", os.path.join(WAV2LIP_DIR, "inference.py"),
+        sys.executable, os.path.join(WAV2LIP_DIR, "inference.py"),
         "--checkpoint_path", weights_path,
         "--face", image_path,
         "--audio", audio_path,
@@ -141,7 +158,8 @@ def generate_video_wav2lip(image_path: str, audio_path: str, output_path: str) -
             capture_output=True,
             text=True,
             timeout=300,
-            cwd=WAV2LIP_DIR
+            cwd=WAV2LIP_DIR,
+            env=_build_subprocess_env(),
         )
 
         if result.returncode != 0:
@@ -176,25 +194,29 @@ def generate_talking_avatar(twin_id: str, audio_path: str) -> Optional[str]:
     Returns:
         Path to the generated video file, or None on failure
     """
-    # Get face image — use neutral emotion photo from onboarding
-    image_path = os.path.join(settings.AVATARS_DIR, twin_id, "neutral.jpg")
-    if not os.path.exists(image_path):
-        # Try other emotions
-        for emotion in ["happy", "sad", "angry"]:
-            alt = os.path.join(settings.AVATARS_DIR, twin_id, f"{emotion}.jpg")
-            if os.path.exists(alt):
-                image_path = alt
-                break
-        else:
-            logger.warning(f"No avatar photo found for twin {twin_id}. Cannot generate video.")
-            return None
+    # Prefer the generated avatar files from the current onboarding flow.
+    image_candidates = [
+        os.path.join(settings.AVATARS_DIR, twin_id, "neutral_avatar.png"),
+        os.path.join(settings.AVATARS_DIR, twin_id, "happy_avatar.png"),
+        os.path.join(settings.AVATARS_DIR, twin_id, "sad_avatar.png"),
+        os.path.join(settings.AVATARS_DIR, twin_id, "angry_avatar.png"),
+        os.path.join(settings.AVATARS_DIR, twin_id, "original.jpg"),
+        os.path.join(settings.AVATARS_DIR, twin_id, "neutral.jpg"),
+    ]
+    image_path = next((path for path in image_candidates if os.path.exists(path)), "")
+    if not image_path:
+        logger.warning(f"No avatar image found for twin {twin_id}. Cannot generate video.")
+        return None
 
     if not os.path.exists(audio_path):
         logger.warning(f"Audio file not found: {audio_path}")
         return None
 
+    image_path = os.path.abspath(image_path)
+    audio_path = os.path.abspath(audio_path)
+
     # Prepare output path
-    videos_dir = os.path.join(VIDEOS_DIR, twin_id)
+    videos_dir = os.path.abspath(os.path.join(VIDEOS_DIR, twin_id))
     os.makedirs(videos_dir, exist_ok=True)
     video_id = uuid.uuid4().hex[:8]
     output_path = os.path.join(videos_dir, f"avatar_{video_id}.mp4")
